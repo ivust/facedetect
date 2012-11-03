@@ -9,6 +9,7 @@
 #include <limits.h>
 #include <time.h>
 #include <ctype.h>
+#include "flandmark/data/cpp/flandmark_detector.h"
 
 
 
@@ -236,6 +237,9 @@ void detect_and_draw( IplImage* img )
     };
 
     IplImage *gray, *small_img, *copy;
+    FLANDMARK_Model *model = flandmark_init("flandmark_model.dat");
+    float *landmarks = (float*) malloc(2 * model->data.options.M * sizeof(float));
+    int *bbox = (int*) malloc(4 * sizeof(int));
     IplImage** faces_themselves = (IplImage**) malloc(10 * sizeof(IplImage*));
     int i, j;
     bool flag = false;
@@ -281,14 +285,38 @@ void detect_and_draw( IplImage* img )
             {   
                 flag = true;
                 num_detected = i + 1;
-                cvSetImageROI(img,
-                             cvRect( center.x - radius,
-                                     center.y - radius,
-                                     2 * radius,
-                                     2 * radius));
+                cvSetImageROI(img, cvRect( center.x - radius,
+                                         center.y - radius,
+                                         2 * radius,
+                                         2 * radius));
                 faces_themselves[i] = cvCreateImage(cvGetSize(img), img->depth, img->nChannels);
                 cvCopy(img, faces_themselves[i], NULL);
                 cvResetImageROI(img);
+
+
+                
+
+                printf("%d %d %d %d\n", center.x - radius, center.y - radius,
+                                        center.x + radius, center.y + radius);
+                bbox[0] = center.x - radius;
+                bbox[1] = center.y - radius;
+                bbox[2] = center.x + radius;
+                bbox[3] = center.y + radius;
+
+                t = (double)cvGetTickCount();
+                if( flandmark_detect(gray, bbox, model, landmarks) )
+                {
+                    fprintf( stderr, "Error during detection of face features\n" );
+                    exit(-1);
+                }
+                t = (double)cvGetTickCount() - t;
+                printf( "face features' detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );
+                cvCircle(img, cvPoint((int)landmarks[0], (int)landmarks[1]), 3, CV_RGB(0, 0,255), CV_FILLED);
+                for (int ii = 2; ii < 2 * model->data.options.M; ii += 2)
+                {
+                    cvCircle(img, cvPoint(int(landmarks[ii]), int(landmarks[ii+1])), 3, CV_RGB(255,0,0), CV_FILLED);
+                }
+                
             }
 
 
@@ -317,4 +345,7 @@ void detect_and_draw( IplImage* img )
 
     cvReleaseImage( &gray );
     cvReleaseImage( &small_img );
+    free(landmarks);
+    free(bbox);
+    flandmark_free(model);
 }
