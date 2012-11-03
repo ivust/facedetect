@@ -1,0 +1,5 @@
+/home/ivust/facedetect/flandmark/bin/CMakeFiles/Project_1.dir
+/home/ivust/facedetect/flandmark/bin/CMakeFiles/Project_2.dir
+/home/ivust/facedetect/flandmark/bin/CMakeFiles/Project_simple_example.dir
+/home/ivust/facedetect/flandmark/bin/libflandmark/CMakeFiles/flandmark_shared.dir
+/home/ivust/facedetect/flandmark/bin/libflandmark/CMakeFiles/flandmark_static.dir

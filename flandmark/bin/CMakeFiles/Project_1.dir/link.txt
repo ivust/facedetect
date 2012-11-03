@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/Project_1.dir/example1.o  -o Project_1 -rdynamic -L/home/ivust/facedetect/flandmark/bin/libflandmark libflandmark/libflandmark_static.a -lopencv_highgui -lopencv_core -lopencv_objdetect -lopencv_imgproc 
