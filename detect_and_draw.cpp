@@ -1,4 +1,5 @@
-void detect_and_draw( IplImage* img, double scale, CvMemStorage* storage, CvHaarClassifierCascade* cascade )
+void detect_and_draw( IplImage* img, double scale, CvMemStorage* storage,
+                    CvHaarClassifierCascade* cascade, bool show )
 {
     static CvScalar colors[] = 
     {
@@ -100,23 +101,27 @@ void detect_and_draw( IplImage* img, double scale, CvMemStorage* storage, CvHaar
         }
     }
 
-    cvShowImage( "result", img );
-    if(flag)
+
+    if (show)
     {
+        cvShowImage( "result", img );
+        if(flag)
+        {
+            for (i = 0; i < num_detected; i++)
+            {
+                char win_name[256]; 
+                sprintf(win_name, "face_%d", i);
+                cvNamedWindow( win_name, CV_WINDOW_AUTOSIZE );
+                cvShowImage( win_name, faces_themselves[i] );
+            }
+        }
+
         for (i = 0; i < num_detected; i++)
         {
             char win_name[256]; 
             sprintf(win_name, "face_%d", i);
-            cvNamedWindow( win_name, CV_WINDOW_AUTOSIZE );
-            cvShowImage( win_name, faces_themselves[i] );
+            cvDestroyWindow("win_name");
         }
-    }
-
-    for (i = 0; i < num_detected; i++)
-    {
-        char win_name[256]; 
-        sprintf(win_name, "face_%d", i);
-        cvDestroyWindow("win_name");
     }
 
     cvReleaseImage( &gray );

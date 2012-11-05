@@ -19,7 +19,8 @@ static CvHaarClassifierCascade* cascade = 0;
 static CvHaarClassifierCascade* nested_cascade = 0;
 int use_nested_cascade = 0;
 
-void detect_and_draw( IplImage* image, double scale, CvMemStorage* storage, CvHaarClassifierCascade* cascade );
+void detect_and_draw( IplImage* image, double scale, CvMemStorage* storage,
+                    CvHaarClassifierCascade* cascade, bool show );
 
 const char* cascade_name =
     "haarcascade_frontalface_alt.xml";
@@ -136,7 +137,7 @@ int main( int argc, char** argv ) {
             int frames = cvGetCaptureProperty( g_capture, CV_CAP_PROP_POS_FRAMES);
             cvSetTrackbarPos("Position","result",frames);
             // cvShowImage( "result", frame );
-            detect_and_draw( frame, scale, storage, cascade );
+            detect_and_draw( frame, scale, storage, cascade, true );
             char c = (char)cvWaitKey(10);
             if( c == 112 )
             {
@@ -158,7 +159,7 @@ int main( int argc, char** argv ) {
             frame = cvQueryFrame( capture );
             if( !frame ) break;
             // cvShowImage( "result", frame );
-            detect_and_draw( frame, scale, storage, cascade );
+            detect_and_draw( frame, scale, storage, cascade, true );
             char c = (char)cvWaitKey(10);
             if( c == 112 )
             {
@@ -175,7 +176,7 @@ int main( int argc, char** argv ) {
 
     else if (image)
     {
-        detect_and_draw( image, scale, storage, cascade );
+        detect_and_draw( image, scale, storage, cascade, true );
         cvWaitKey(0);
         cvReleaseImage( &image );
         cvDestroyWindow( "result" );
